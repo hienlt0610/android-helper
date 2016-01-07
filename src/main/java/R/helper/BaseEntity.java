@@ -167,6 +167,7 @@ public class BaseEntity implements IEntityIO {
                     } else if (item instanceof HashMap) {
                         T w = type.newInstance();
                         w.importData((HashMap) item);
+                        b.add(w);
                     }
                 }
                 return b;
