@@ -94,7 +94,7 @@ public class LocalStorage {
         }
     }
 
-    public static void set(@NonNull String key, IExportable obj) {
+    public static void set(@NonNull String key, IEntityIO obj) {
         try {
             if (obj != null) {
                 JSONObject json = obj.exportToJsonObject();
@@ -135,7 +135,7 @@ public class LocalStorage {
         set(sInstance.ctx.getString(key), value);
     }
 
-    public static void set(int key, IExportable obj) {
+    public static void set(int key, IEntityIO obj) {
         set(sInstance.ctx.getString(key), obj);
     }
 
@@ -195,10 +195,10 @@ public class LocalStorage {
         }
     };
 
-    public static boolean loadExportableObject(@NonNull String key, @NonNull IExportable obj) {
+    public static boolean loadExportableObject(@NonNull String key, @NonNull IEntityIO obj) {
         HashMap m = getHashMap(key);
         if (m != null) {
-            obj.importFromHashMap(m);
+            obj.importData(m);
             return true;
         } else {
             return false;
@@ -229,7 +229,7 @@ public class LocalStorage {
         return getHashMap(sInstance.ctx.getString(key));
     }
 
-    public static boolean loadExportableObject(int key, @NonNull IExportable obj) {
+    public static boolean loadExportableObject(int key, @NonNull IEntityIO obj) {
         return loadExportableObject(sInstance.ctx.getString(key), obj);
     }
 
