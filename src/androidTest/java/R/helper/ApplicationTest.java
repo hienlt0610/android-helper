@@ -1,4 +1,4 @@
-package vietnamworks.com.helper;
+package R.helper;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

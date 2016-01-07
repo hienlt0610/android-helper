@@ -1,4 +1,4 @@
-package vietnamworks.com.helper;
+package R.helper;
 
 import org.junit.Test;
 
