@@ -245,5 +245,21 @@ public class LocalStorage {
         remove(sInstance.ctx.getString(key));
     }
 
+    @Nullable
+    public static String[] findKeys(String filter) {
+        try {
+            return sInstance.db.findKeys(filter);
+        } catch (Exception E) {
+            return null;
+        }
+    }
 
+    @Nullable
+    public static String[] findKeys(String from, String to) {
+        try {
+            return sInstance.db.findKeysBetween(from, to);
+        } catch (Exception E) {
+            return null;
+        }
+    }
 }
