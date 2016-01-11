@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,23 +14,31 @@ import java.util.List;
  */
 public class BaseEntity implements IEntityIO {
 
-    public interface EntityField {
-        public boolean equals(String otherName);
-        public String toString();
+    void bind(BaseEntity clzz) {
+        try {
+            fields = new ArrayList<>();
+            for (Field field : clzz.getClass().getDeclaredFields()) {
+                Class type = field.getType();
+                String name = field.getName();
+                final R.helper.EntityField annotation = field.getAnnotation(R.helper.EntityField.class);
+                if (annotation != null) {
+                    String field_name = annotation.value();
+                    field.setAccessible(true);
+                    field.set(clzz, field_name);
+
+                    fields.add(field_name);
+                }
+            }
+        }catch (Exception E) {
+            E.printStackTrace();
+        }
     }
 
     protected List<String> fields;
     protected HashMap<String, Object> data = new HashMap<>();
 
-    public BaseEntity(@NonNull List<String> fieldsList) {
-        fields = fieldsList;
-    }
-
-    public BaseEntity(EntityField... fieldsList) {
-        fields = new ArrayList<>();
-        for (EntityField e: fieldsList) {
-            fields.add(e.toString());
-        }
+    public BaseEntity() {
+        bind(this);
     }
 
     public HashMap exportToHashMap() {
