@@ -2,39 +2,60 @@ package R.helper;
 
 import android.support.annotation.NonNull;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by duynk on 1/5/16.
  */
 public class BaseEntity implements IEntityIO {
 
+    class EntityType {
+        Class entityType;
+        Class<?> collectionType;
+        boolean isArray = false;
+        boolean isDerivedFromBaseEntity;
+        EntityType(Class entityType, Class collectionType) {
+            this.entityType = entityType;
+            this.collectionType = collectionType;
+            isArray = true;
+            isDerivedFromBaseEntity = BaseEntity.class.isAssignableFrom(entityType);
+        }
+        EntityType(Class entityType) {
+            this.entityType = entityType;
+            this.collectionType = void.class;
+        }
+    }
+
+
     void bind(BaseEntity clzz) {
         try {
-            fields = new ArrayList<>();
+            fields = new HashMap<>();
             for (Field field : clzz.getClass().getDeclaredFields()) {
                 Class type = field.getType();
                 String name = field.getName();
-                final R.helper.EntityField annotation = field.getAnnotation(R.helper.EntityField.class);
+                final EntityField annotation = field.getAnnotation(EntityField.class);
                 if (annotation != null) {
                     String field_name = annotation.value();
                     field.setAccessible(true);
                     field.set(clzz, field_name);
 
-                    fields.add(field_name);
+                    if (annotation.collectionType() == void.class) {
+                        fields.put(field_name, new EntityType(annotation.type()));
+                    } else {
+                        fields.put(field_name, new EntityType(annotation.type(), annotation.collectionType()));
+                    }
                 }
             }
         }catch (Exception E) {
             E.printStackTrace();
         }
     }
-
-    protected List<String> fields;
+    protected HashMap<String, EntityType>fields;
     protected HashMap<String, Object> data = new HashMap<>();
 
     public BaseEntity() {
@@ -46,20 +67,64 @@ public class BaseEntity implements IEntityIO {
     }
 
     public JSONObject exportToJsonObject() {
-        return new JSONObject(data);
+        JSONObject jsonObject = new JSONObject(data);
+
+        try {
+            for (String field : fields.keySet()) {
+                EntityType t = fields.get(field);
+                if (t.isArray) {
+                    JSONArray array = new JSONArray();
+                    ArrayList a = (ArrayList)data.get(field);
+                    for (Object obj: a) {
+                        JSONObject jsonObject2 = new JSONObject(data);
+                        if (t.isDerivedFromBaseEntity) {
+                            BaseEntity entity = (BaseEntity)obj;
+                            jsonObject2.put(field, entity.exportToJsonObject());
+                        } else {
+                            jsonObject2.put(field, data.get(field));
+                        }
+                        array.put(jsonObject2);
+                    }
+                    jsonObject.put(field, array);
+                } else {
+                    if (t.isDerivedFromBaseEntity) {
+                        BaseEntity entity = (BaseEntity) data.get(field);
+                        jsonObject.put(field, entity.exportToJsonObject());
+                    } else {
+                        jsonObject.put(field, data.get(field));
+                    }
+                }
+            }
+        }catch (Exception E) {
+            E.printStackTrace();
+        }
+        return jsonObject;
     }
 
     public void importData(@NonNull HashMap m) {
-        for (String field:fields) {
+        for (String field:fields.keySet()) {
             if (m.containsKey(field)) {
-                data.put(field, m.get(field));
+                EntityType t = fields.get(field);
+                if (t.isArray) {
+                    if (t.isDerivedFromBaseEntity) {
+                        data.put(field, castArrayList(m.get(field), t.entityType));
+                    } else {
+                        //TODO: handle array of string
+                    }
+                } else {
+                    if (!t.isDerivedFromBaseEntity) {
+                        data.put(field, m.get(field));
+                    } else {
+                        data.put(field, castObject(m.get(field), t.entityType));
+                    }
+                }
             }
         }
     }
 
     public void importData(@NonNull JSONObject m) {
         try {
-            for (String field : fields) {
+            for (String field : fields.keySet()) {
                 if (m.has(field)) {
                     data.put(field, m.get(field));
                 }
@@ -70,7 +135,7 @@ public class BaseEntity implements IEntityIO {
     }
 
     public void set(String key, Object value) {
-        if (fields.contains(key)) {
+        if (fields.containsKey(key)) {
             data.put(key, value);
         }
     }
@@ -81,7 +146,7 @@ public class BaseEntity implements IEntityIO {
     }
 
     public Object get(@NonNull String key, Object defaultValue) {
-        if (fields.contains(key)) {
+        if (fields.containsKey(key)) {
             if (data.containsKey(key)) {
                 Object obj = data.get(key);
                 return obj == null ? defaultValue : obj;
@@ -164,7 +229,7 @@ public class BaseEntity implements IEntityIO {
         return getArray(e.toString());
     }
 
-    public <T extends IEntityIO> ArrayList<T> convertArrayList(Object obj, Class<T> type) {
+    public <T extends IEntityIO> ArrayList<T> castArrayList(Object obj, Class<T> type) {
         if (obj instanceof ArrayList) {
             try {
                 ArrayList a = (ArrayList)obj;
@@ -186,5 +251,20 @@ public class BaseEntity implements IEntityIO {
         } else {
             return null;
         }
+    }
+
+    public <T extends IEntityIO> T castObject(Object obj, Class<T> type) {
+        try {
+            if (type.isInstance(obj)) {
+                return (T) obj;
+            } else if (obj instanceof HashMap) {
+                T w = type.newInstance();
+                w.importData((HashMap) obj);
+                return w;
+            }
+        } catch (Exception E) {
+            return null;
+        }
+        return null;
     }
 }
