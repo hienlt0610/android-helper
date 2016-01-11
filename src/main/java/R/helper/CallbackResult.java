@@ -1,7 +1,5 @@
 package R.helper;
 
-import vietnamworks.com.helper.R;
-
 /**
  * Created by duynk on 12/29/15.
  */
@@ -13,6 +11,8 @@ public class CallbackResult {
             this.errorCode = errorCode;
             this.message = message;
         }
+        public String getMessage() {return this.message;}
+        public int getCode() {return this.errorCode;}
     }
     CallbackError error;
     Object data;
