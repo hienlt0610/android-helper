@@ -56,4 +56,8 @@ public class Common {
         DisplayMetrics metrics = resources.getDisplayMetrics();
         return px / (metrics.densityDpi / 160f);
     }
+
+    public static void acceptAllSSL() {
+        NukeSSLCerts.nuke();
+    }
 }
