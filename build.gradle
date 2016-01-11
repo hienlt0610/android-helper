@@ -28,7 +28,7 @@ dependencies {
     compile 'com.snappydb:snappydb-lib:0.4.0'
     compile 'com.esotericsoftware.kryo:kryo:2.24.0'
 
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.2.+'
-    compile 'com.fasterxml.jackson.core:jackson-core:2.2.+'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.2.+'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.7.0'
+    compile 'com.fasterxml.jackson.core:jackson-core:2.7.0'
+    compile 'com.fasterxml.jackson.core:jackson-annotations:2.7.0'
 }
