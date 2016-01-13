@@ -10,7 +10,7 @@ import R.helper.EntityField;
 public class School extends BaseEntity {
     @EntityField("name") public static String NAME;
     @EntityField(value = "level", type = Integer.class) public static String LEVEL;
-    @EntityArrayField(value = "student", type = Student.class) public static String STUDENT;
+    @EntityArrayField(value = "class", type = Clazz.class) public static String CLASS;
 
     public School() {
     }

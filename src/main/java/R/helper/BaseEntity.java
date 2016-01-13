@@ -29,6 +29,7 @@ public abstract class BaseEntity {
         EntityType(Class entityType) {
             this.entityType = entityType;
             this.collectionType = void.class;
+            isDerivedFromEntity = BaseEntity.class.isAssignableFrom(entityType);
         }
         public Class getEntityType() {
             return entityType;
@@ -40,8 +41,6 @@ public abstract class BaseEntity {
         try {
             fields = new HashMap<>();
             for (Field field : clzz.getClass().getDeclaredFields()) {
-                Class type = field.getType();
-                String name = field.getName();
                 final EntityField annotation = field.getAnnotation(EntityField.class);
                 if (annotation != null) {
                     String field_name = annotation.value();
@@ -164,7 +163,7 @@ public abstract class BaseEntity {
     }
 
     public String getString(@NonNull String key, String defaultValue) {
-        return (String) get(key, defaultValue);
+        return get(key, defaultValue).toString();
     }
 
     public int getInt(@NonNull String key, int defaultValue) {
@@ -222,11 +221,20 @@ public abstract class BaseEntity {
 
     @Override
     public String toString() {
-        try {
-            return this.exportToJsonObject().toString();
-        } catch (Exception E) {
-            E.printStackTrace();
-            return E.toString();
+        if (this.data != null && this.fields != null) {
+            try {
+                JSONObject job = this.exportToJsonObject();
+                if (job != null) {
+                    return job.toString();
+                } else {
+                    return super.toString();
+                }
+            } catch (Exception E) {
+                E.printStackTrace();
+                return E.toString();
+            }
+        } else {
+            return super.toString();
         }
     }
 }

@@ -34,6 +34,7 @@ public class BaseApplication  extends android.app.Application {
 
     public BaseApplication() {
         super();
+        //Test.testEntity();
         sInstance = this;
     }
 
