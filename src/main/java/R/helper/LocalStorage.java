@@ -94,20 +94,12 @@ public class LocalStorage {
         }
     }
 
-    public static void set(@NonNull String key, IEntityIO obj) {
-        try {
-            if (obj != null) {
-                JSONObject json = obj.exportToJsonObject();
-                if (json == null) {
-                    set(key, obj.exportToHashMap());
-                } else {
-                    set(key, json);
-                }
-            } else {
-                sInstance.db.del(key);
-            }
-        } catch (Exception E) {
-            E.printStackTrace();
+    public static void set(@NonNull String key, BaseEntity obj) throws Exception{
+        if (obj != null) {
+            JSONObject json = obj.exportToJsonObject();
+            set(key, json);
+        } else {
+            sInstance.db.del(key);
         }
     }
 
@@ -135,8 +127,8 @@ public class LocalStorage {
         set(sInstance.ctx.getString(key), value);
     }
 
-    public static void set(int key, IEntityIO obj) {
-        set(sInstance.ctx.getString(key), obj);
+    public static void set(int key, BaseEntity obj) throws Exception{
+        set(sInstance.ctx.getString(key), obj.exportToJsonObject());
     }
 
     public static int getInt(@NonNull String key, int defaultValue) {
@@ -195,8 +187,8 @@ public class LocalStorage {
         }
     };
 
-    public static boolean loadExportableObject(@NonNull String key, @NonNull IEntityIO obj) {
-        HashMap m = getHashMap(key);
+    public static boolean loadExportableObject(@NonNull String key, @NonNull BaseEntity obj) throws Exception {
+        JSONObject m = getJSON(key);
         if (m != null) {
             obj.importData(m);
             return true;
@@ -229,7 +221,7 @@ public class LocalStorage {
         return getHashMap(sInstance.ctx.getString(key));
     }
 
-    public static boolean loadExportableObject(int key, @NonNull IEntityIO obj) {
+    public static boolean loadExportableObject(int key, @NonNull BaseEntity obj) throws Exception{
         return loadExportableObject(sInstance.ctx.getString(key), obj);
     }
 
