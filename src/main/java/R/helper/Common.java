@@ -3,7 +3,10 @@ package R.helper;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.util.DisplayMetrics;
+
+import java.util.List;
 
 /**
  * Created by duynk on 12/29/15.
@@ -59,5 +62,16 @@ public class Common {
 
     public static void acceptAllSSL() {
         NukeSSLCerts.nuke();
+    }
+
+    public static String join(List<String> list,@NonNull String delim) {
+        String tmp_delim = "";
+        StringBuilder sb = new StringBuilder();
+        for (String s:list) {
+            sb.append(tmp_delim);
+            sb.append(s);
+            tmp_delim = delim;
+        }
+        return sb.toString();
     }
 }
