@@ -126,7 +126,31 @@ public abstract class EntityX {
                                 }
                             } else {
                                 for (int i = 0; i < array.length(); i++) {
-                                    list.add(array.get(i));
+                                    Object data = array.get(i);
+                                    Class data_class = data.getClass();
+                                    if (data_class != t.entityType) {
+                                        if (data instanceof String) {
+                                            if (t.entityType == int.class) {
+                                                int tmp = Integer.parseInt((String) data);
+                                                list.add(tmp);
+                                            } else if (t.entityType == long.class) {
+                                                long tmp = Long.parseLong((String) data);
+                                                list.add(tmp);
+                                            } else if (t.entityType == float.class) {
+                                                float tmp = Float.parseFloat((String) data);
+                                                list.add(tmp);
+                                            } else if (t.entityType == double.class) {
+                                                double tmp = Double.parseDouble((String) data);
+                                                list.add(tmp);
+                                            }
+                                        } else if (t.entityType == String.class){
+                                            list.add(data.toString());
+                                        } else {
+                                            list.add(data);
+                                        }
+                                    } else {
+                                        list.add(data);
+                                    }
                                 }
                             }
                             field.set(this, list);
@@ -135,7 +159,31 @@ public abstract class EntityX {
                         if (t.isDerivedFromEntity) {
                             field.set(this, castObject(input.getJSONObject(t.key), t.entityType));
                         } else {
-                            field.set(this, input.get(t.key));
+                            Object data = input.get(t.key);
+                            Class data_class = data.getClass();
+                            if (data_class != t.entityType) {
+                                if (data instanceof String) {
+                                    if (t.entityType == int.class) {
+                                        int tmp = Integer.parseInt((String) data);
+                                        field.set(this, tmp);
+                                    } else if (t.entityType == long.class) {
+                                        long tmp = Long.parseLong((String) data);
+                                        field.set(this, tmp);
+                                    } else if (t.entityType == float.class) {
+                                        float tmp = Float.parseFloat((String) data);
+                                        field.set(this, tmp);
+                                    } else if (t.entityType == double.class) {
+                                        double tmp = Double.parseDouble((String) data);
+                                        field.set(this, tmp);
+                                    }
+                                } else if (t.entityType == String.class){
+                                    field.set(this, data.toString());
+                                } else {
+                                    field.set(this, data);
+                                }
+                            } else {
+                                field.set(this, data);
+                            }
                         }
                     }
                 }
