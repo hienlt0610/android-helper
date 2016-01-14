@@ -1,45 +1,26 @@
 package R.helper.test;
 
-import android.test.suitebuilder.annotation.MediumTest;
-
-import org.json.JSONObject;
-
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
  * Created by duynk on 1/13/16.
  */
 public class Test {
-    @MediumTest
     public static void testEntity() {
         Student a = new Student();
-        a.set(Student.NAME, "Duy");
-        a.set(Student.TAG, Arrays.asList("D1", "D2", "D3"));
+        a.setAge(10);
+        a.setLivingAddress(new Address("abc", "xyz"));
+        a.setPhone(new ArrayList<>(Arrays.asList("0123", "0234", "0124")));
+        a.setOtherAddresses(new ArrayList<Address>(Arrays.asList(new Address("ad1", "ad1x"), new Address("ad2", "ad2x"))));
+        System.out.println(a);
 
-        Clazz cc = new Clazz();
-        cc.set(Clazz.STUDENT, Arrays.asList(a));
-
-        School s = new School();
-        s.set(School.NAME, "PTIT");
-        s.set(School.LEVEL, 10);
-        s.set(School.CLASS, Arrays.asList(cc));
-
+        Student b = new Student();
         try {
-            JSONObject j = s.exportToJsonObject();
-            String jsonString = j.toString();
-            System.out.println(jsonString);
-
-            School s2 = new School();
-            try {
-                s2.importData(new JSONObject(jsonString));
-                Clazz test_class = (Clazz)s2.getArray(School.CLASS).get(0);
-                Student stu = (Student)test_class.getArray(Clazz.STUDENT).get(0);
-                System.out.println(stu.get(Student.NAME, null));
-            }catch (Exception E) {
-                E.printStackTrace();
-            }
+            b.importFromJson(a.exportToJson());
         } catch (Exception E) {
-            E.printStackTrace();
+            E.printStackTrace();;
         }
+        System.out.println(b);
     }
 }

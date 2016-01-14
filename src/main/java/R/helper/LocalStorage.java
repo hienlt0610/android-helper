@@ -94,9 +94,9 @@ public class LocalStorage {
         }
     }
 
-    public static void set(@NonNull String key, BaseEntity obj) throws Exception{
+    public static void set(@NonNull String key, EntityX obj) throws Exception{
         if (obj != null) {
-            JSONObject json = obj.exportToJsonObject();
+            JSONObject json = obj.exportToJson();
             set(key, json);
         } else {
             sInstance.db.del(key);
@@ -127,8 +127,8 @@ public class LocalStorage {
         set(sInstance.ctx.getString(key), value);
     }
 
-    public static void set(int key, BaseEntity obj) throws Exception{
-        set(sInstance.ctx.getString(key), obj.exportToJsonObject());
+    public static void set(int key, EntityX obj) throws Exception{
+        set(sInstance.ctx.getString(key), obj.exportToJson());
     }
 
     public static int getInt(@NonNull String key, int defaultValue) {
@@ -187,10 +187,10 @@ public class LocalStorage {
         }
     };
 
-    public static boolean loadExportableObject(@NonNull String key, @NonNull BaseEntity obj) throws Exception {
+    public static boolean loadEntityX(@NonNull String key, @NonNull EntityX obj) throws Exception {
         JSONObject m = getJSON(key);
         if (m != null) {
-            obj.importData(m);
+            obj.importFromJson(m);
             return true;
         } else {
             return false;
@@ -221,8 +221,8 @@ public class LocalStorage {
         return getHashMap(sInstance.ctx.getString(key));
     }
 
-    public static boolean loadExportableObject(int key, @NonNull BaseEntity obj) throws Exception{
-        return loadExportableObject(sInstance.ctx.getString(key), obj);
+    public static boolean loadEntityX(int key, @NonNull EntityX obj) throws Exception{
+        return loadEntityX(sInstance.ctx.getString(key), obj);
     }
 
     public static void remove(String key) {
