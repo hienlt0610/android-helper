@@ -183,7 +183,10 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void pushFragmentWithShareAnimation(android.support.v4.app.Fragment endFragment, int holder_id, Bundle bundle, int start_anim, int end_anim, ShareAnimationView... sharedViews) {
+    public void pushFragmentAnimateTransition(android.support.v4.app.Fragment endFragment, int holder_id, Bundle bundle, ShareAnimationView... sharedViews) {
+        pushFragmentAnimateTransition(endFragment, holder_id, bundle, 0, 0, sharedViews);
+    }
+    public void pushFragmentAnimateTransition(android.support.v4.app.Fragment endFragment, int holder_id, Bundle bundle, int start_anim, int end_anim, ShareAnimationView... sharedViews) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             BaseFragment currentFragment = (BaseFragment)getSupportFragmentManager().findFragmentById(holder_id);
             if (start_anim <= 0) {
@@ -201,7 +204,8 @@ public class BaseActivity extends AppCompatActivity {
             endFragment.setArguments(bundle);
 
             FragmentTransaction trans = getSupportFragmentManager().beginTransaction()
-                    .replace(holder_id, endFragment)
+                    .add(holder_id, endFragment)
+                    .hide(currentFragment)
                     .addToBackStack(null);
             if (sharedViews != null && sharedViews.length > 0) {
                 for (ShareAnimationView v: sharedViews) {
