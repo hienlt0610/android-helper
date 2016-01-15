@@ -12,18 +12,16 @@ import java.util.List;
  * Created by duynk on 12/29/15.
  */
 public class Common {
-    public static int apiVersion = Build.VERSION.SDK_INT;
-
     public static boolean isLollipopOrLater() {
-        return apiVersion >= android.os.Build.VERSION_CODES.LOLLIPOP;
+        return Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP;
     }
 
     public static boolean isMarshMallowOrLater() {
-        return apiVersion >= Build.VERSION_CODES.M;
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
     public static boolean isVersionOrLater(int version) {
-        return apiVersion >= version;
+        return Build.VERSION.SDK_INT >= version;
     }
 
     public static int sign(float a) {

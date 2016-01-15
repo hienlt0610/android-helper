@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
@@ -19,6 +21,8 @@ import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import vietnamworks.com.helper.R;
 
 /**
  * Created by duynk on 12/29/15.
@@ -165,6 +169,50 @@ public class BaseActivity extends AppCompatActivity {
 
     public void openFragment(android.support.v4.app.Fragment f, int holder_id) {
         openFragment(f, holder_id, false);
+    }
+
+    static int getTransformAndBoundsTransition() {
+        return R.transition.transform_n_bounds;
+    }
+    public static class ShareAnimationView {
+        View ele;
+        String anim_uid;
+        public ShareAnimationView(View v, String anim_uid) {
+            this.ele = v;
+            this.anim_uid = anim_uid;
+        }
+    }
+
+    public void pushFragmentWithShareAnimation(android.support.v4.app.Fragment endFragment, int holder_id, Bundle bundle, int start_anim, int end_anim, ShareAnimationView... sharedViews) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            BaseFragment currentFragment = (BaseFragment)getSupportFragmentManager().findFragmentById(holder_id);
+            if (start_anim <= 0) {
+                start_anim = R.transition.transform_n_bounds;
+            }
+            if (end_anim <= 0) {
+                end_anim = android.R.transition.fade;
+            }
+
+            currentFragment.setSharedElementReturnTransition(TransitionInflater.from(this).inflateTransition(start_anim));
+            currentFragment.setExitTransition(TransitionInflater.from(this).inflateTransition(end_anim));
+
+            endFragment.setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(start_anim));
+            endFragment.setEnterTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.fade));
+            endFragment.setArguments(bundle);
+
+            FragmentTransaction trans = getSupportFragmentManager().beginTransaction()
+                    .replace(holder_id, endFragment)
+                    .addToBackStack(null);
+            if (sharedViews != null && sharedViews.length > 0) {
+                for (ShareAnimationView v: sharedViews) {
+                    v.ele.setTransitionName(v.anim_uid);
+                    trans.addSharedElement(v.ele, v.anim_uid);
+                }
+            }
+            trans.commit();
+        } else {
+            pushFragment(endFragment, holder_id);
+        }
     }
 
     public static void setTitleBarColor(int color) {
