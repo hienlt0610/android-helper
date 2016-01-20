@@ -134,28 +134,25 @@ public class BaseActivity extends AppCompatActivity {
     }
 
 
-    public void pushFragment(android.support.v4.app.Fragment f, int holder_id, boolean addToBackStack) {
+    public static void pushFragment(android.support.v4.app.Fragment f, int holder_id) {
+        sInstance.getSupportFragmentManager().beginTransaction().add(holder_id, f).addToBackStack(null).commit();
+    }
+
+    public static void replaceFragment(android.support.v4.app.Fragment f, int holder_id) {
+        sInstance.getSupportFragmentManager().popBackStack();
+        sInstance.getSupportFragmentManager().beginTransaction().add(holder_id, f).addToBackStack(null).commit();
+    }
+
+    public static void openFragment(android.support.v4.app.Fragment f, int holder_id, boolean addToBackStack) {
         if (addToBackStack) {
-            getSupportFragmentManager().beginTransaction().add(holder_id, f).addToBackStack(null).commit();
+            sInstance.getSupportFragmentManager().beginTransaction().replace(holder_id, f).addToBackStack(null).commit();
         } else {
-            getSupportFragmentManager().beginTransaction().replace(holder_id, f).commit();
+            sInstance.getSupportFragmentManager().beginTransaction().replace(holder_id, f).commit();
         }
     }
 
-    public void pushFragment(android.support.v4.app.Fragment f, int holder_id) {
-        pushFragment(f, holder_id, true);
-    }
-
-    public void openFragment(android.support.v4.app.Fragment f, int holder_id, boolean addToBackStack) {
-        if (addToBackStack) {
-            getSupportFragmentManager().beginTransaction().replace(holder_id, f).addToBackStack(null).commit();
-        } else {
-            getSupportFragmentManager().beginTransaction().replace(holder_id, f).commit();
-        }
-    }
-
-    public void openFragmentAndClean(android.support.v4.app.Fragment f, int holder_id) {
-        FragmentManager manager = getSupportFragmentManager();
+    public static void openFragmentAndClean(android.support.v4.app.Fragment f, int holder_id) {
+        FragmentManager manager = sInstance.getSupportFragmentManager();
         try {
             if (manager.getBackStackEntryCount() > 0) {
                 FragmentManager.BackStackEntry first = manager.getBackStackEntryAt(0);
@@ -167,7 +164,7 @@ public class BaseActivity extends AppCompatActivity {
         manager.beginTransaction().replace(holder_id, f).commit();
     }
 
-    public void openFragment(android.support.v4.app.Fragment f, int holder_id) {
+    public static void openFragment(android.support.v4.app.Fragment f, int holder_id) {
         openFragment(f, holder_id, false);
     }
 
@@ -183,12 +180,12 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void pushFragmentAnimateTransition(android.support.v4.app.Fragment endFragment, int holder_id, Bundle bundle, ShareAnimationView... sharedViews) {
+    public static void pushFragmentAnimateTransition(android.support.v4.app.Fragment endFragment, int holder_id, Bundle bundle, ShareAnimationView... sharedViews) {
         pushFragmentAnimateTransition(endFragment, holder_id, bundle, 0, 0, sharedViews);
     }
-    public void pushFragmentAnimateTransition(android.support.v4.app.Fragment endFragment, int holder_id, Bundle bundle, int start_anim, int end_anim, ShareAnimationView... sharedViews) {
+    public static void pushFragmentAnimateTransition(android.support.v4.app.Fragment endFragment, int holder_id, Bundle bundle, int start_anim, int end_anim, ShareAnimationView... sharedViews) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            BaseFragment currentFragment = (BaseFragment)getSupportFragmentManager().findFragmentById(holder_id);
+            BaseFragment currentFragment = (BaseFragment)sInstance.getSupportFragmentManager().findFragmentById(holder_id);
             if (start_anim <= 0) {
                 start_anim = R.transition.transform_n_bounds;
             }
@@ -196,14 +193,14 @@ public class BaseActivity extends AppCompatActivity {
                 end_anim = android.R.transition.fade;
             }
 
-            currentFragment.setSharedElementReturnTransition(TransitionInflater.from(this).inflateTransition(start_anim));
-            currentFragment.setExitTransition(TransitionInflater.from(this).inflateTransition(end_anim));
+            currentFragment.setSharedElementReturnTransition(TransitionInflater.from(sInstance).inflateTransition(start_anim));
+            currentFragment.setExitTransition(TransitionInflater.from(sInstance).inflateTransition(end_anim));
 
-            endFragment.setSharedElementEnterTransition(TransitionInflater.from(this).inflateTransition(start_anim));
-            endFragment.setEnterTransition(TransitionInflater.from(this).inflateTransition(android.R.transition.fade));
+            endFragment.setSharedElementEnterTransition(TransitionInflater.from(sInstance).inflateTransition(start_anim));
+            endFragment.setEnterTransition(TransitionInflater.from(sInstance).inflateTransition(android.R.transition.fade));
             endFragment.setArguments(bundle);
 
-            FragmentTransaction trans = getSupportFragmentManager().beginTransaction()
+            FragmentTransaction trans = sInstance.getSupportFragmentManager().beginTransaction()
                     .add(holder_id, endFragment)
                     .hide(currentFragment)
                     .addToBackStack(null);
@@ -217,6 +214,11 @@ public class BaseActivity extends AppCompatActivity {
         } else {
             pushFragment(endFragment, holder_id);
         }
+    }
+
+    public static void popFragment() {
+        FragmentManager manager = sInstance.getSupportFragmentManager();
+        manager.popBackStackImmediate();
     }
 
     public static void setTitleBarColor(int color) {
