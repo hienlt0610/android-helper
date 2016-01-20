@@ -1,5 +1,6 @@
 package R.helper;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
@@ -18,6 +19,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -241,6 +243,20 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public static void showActionBar() {
+        ActionBar b =  sInstance.getSupportActionBar();
+        if (b != null) {
+            b.show();
+        }
+    }
+
+    public static void hideActionBar() {
+        ActionBar b =  sInstance.getSupportActionBar();
+        if (b != null) {
+            b.hide();
+        }
+    }
+
     Callback permissionCallback;
     public void askForPermission(String[] permission, Callback callback) {
         List<String> permissions = new ArrayList<String>();
@@ -286,6 +302,22 @@ public class BaseActivity extends AppCompatActivity {
             default: {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
             }
+        }
+    }
+
+    public static void hideKeyboard() {
+        View view = sInstance.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)sInstance.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    public static void showKeyboard() {
+        View view = sInstance.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)sInstance.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(view, 0);
         }
     }
 }
