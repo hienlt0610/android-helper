@@ -157,7 +157,17 @@ public abstract class EntityX {
                         }
                     } else {
                         if (t.isDerivedFromEntity) {
-                            field.set(this, castObject(input.getJSONObject(t.key), t.entityType));
+                            Object tmp = input.get(t.key);
+                            if (tmp instanceof JSONObject) {
+                                field.set(this, castObject((JSONObject)tmp, t.entityType));
+                            } else if (tmp instanceof JSONArray) {
+                                JSONArray jr = (JSONArray)tmp;
+                                if (jr.length() > 0) {
+                                    field.set(this, castObject(jr.getJSONObject(0), t.entityType));
+                                } else {
+                                    field.set(this, null);
+                                }
+                            }
                         } else {
                             Object data = input.get(t.key);
                             Class data_class = data.getClass();
