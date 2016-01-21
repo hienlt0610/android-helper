@@ -16,10 +16,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +39,9 @@ public class BaseActivity extends AppCompatActivity {
     private boolean isKeyboardShown;
     private Rect screenRegion;
 
+    public static float density;
+    static Toast toast;
+
     public BaseActivity() {
         super();
         BaseActivity.sInstance = this;
@@ -46,6 +51,8 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         isKeyboardShown = false;
+
+        density = this.getResources().getDisplayMetrics().density;
 
         final View activityRootView = getWindow().getDecorView().findViewById(android.R.id.content);
         activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -319,5 +326,35 @@ public class BaseActivity extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager)sInstance.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(view, 0);
         }
+    }
+
+    public void nothing(View v) {}
+
+    public static void toast(int messageId) {
+        toast(sInstance.getString(messageId));
+    }
+
+    public static void toast(final String message) {
+        timeout(new Runnable() {
+            @Override
+            public void run() {
+                int base_padding = 0;
+                if (Common.isLollipopOrLater()) {
+                    base_padding = (int) (40 * density);
+                }
+                if (toast != null) {
+                    toast.cancel();
+                    toast = null;
+                }
+
+                toast = Toast.makeText(sInstance.getBaseContext(), message, Toast.LENGTH_SHORT);
+                if (sInstance.isKeyboardShown) {
+                    toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, getScreenHeight() - getStatusBarHeight() - sInstance.screenRegion.height() + base_padding);
+                } else {
+                    toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, base_padding);
+                }
+                toast.show();
+            }
+        }, 500);
     }
 }
