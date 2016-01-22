@@ -301,7 +301,7 @@ public class BaseActivity extends AppCompatActivity {
                     if (allAccepted) {
                         permissionCallback.onCompleted(this, new CallbackSuccess());
                     } else {
-                        permissionCallback.onCompleted(this, new CallbackResult(new CallbackResult.CallbackError(-1, null)));
+                        permissionCallback.onCompleted(this, new CallbackResult(new CallbackResult.CallbackErrorInfo(-1, null)));
                     }
                 }
             }

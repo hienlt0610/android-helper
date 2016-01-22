@@ -4,33 +4,37 @@ package R.helper;
  * Created by duynk on 12/29/15.
  */
 public class CallbackResult {
-    public static class CallbackError {
+    public static class CallbackErrorInfo {
         int errorCode;
         String message;
-        public CallbackError(int errorCode, String message) {
+        public CallbackErrorInfo(int errorCode, String message) {
             this.errorCode = errorCode;
+            this.message = message;
+        }
+        public CallbackErrorInfo(IIErrorX error, String message) {
+            this.errorCode = error.value();
             this.message = message;
         }
         public String getMessage() {return this.message;}
         public int getCode() {return this.errorCode;}
     }
-    CallbackError error;
+    CallbackErrorInfo error;
     Object data;
 
     public boolean hasError() {
         return error != null;
     }
 
-    public CallbackError getError() {
+    public CallbackErrorInfo getError() {
         return this.error;
     }
 
-    public CallbackResult(CallbackError error, Object data) {
+    public CallbackResult(CallbackErrorInfo error, Object data) {
         this.error = error;
         this.data = data;
     }
 
-    public CallbackResult(CallbackError error) {
+    public CallbackResult(CallbackErrorInfo error) {
         this.error = error;
         this.data = null;
     }
