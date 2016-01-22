@@ -173,18 +173,26 @@ public abstract class EntityX {
                             Class data_class = data.getClass();
                             if (data_class != t.entityType) {
                                 if (data instanceof String) {
-                                    if (t.entityType == int.class) {
-                                        int tmp = Integer.parseInt((String) data);
-                                        field.set(this, tmp);
-                                    } else if (t.entityType == long.class) {
-                                        long tmp = Long.parseLong((String) data);
-                                        field.set(this, tmp);
-                                    } else if (t.entityType == float.class) {
-                                        float tmp = Float.parseFloat((String) data);
-                                        field.set(this, tmp);
-                                    } else if (t.entityType == double.class) {
-                                        double tmp = Double.parseDouble((String) data);
-                                        field.set(this, tmp);
+                                    try {
+                                        if (t.entityType == int.class || t.entityType == Integer.class) {
+                                            int tmp = Integer.parseInt((String) data);
+                                            field.set(this, tmp);
+                                        } else if (t.entityType == long.class || t.entityType == Long.class) {
+                                            long tmp = Long.parseLong((String) data);
+                                            field.set(this, tmp);
+                                        } else if (t.entityType == float.class || t.entityType == Float.class) {
+                                            float tmp = Float.parseFloat((String) data);
+                                            field.set(this, tmp);
+                                        } else if (t.entityType == double.class || t.entityType == Double.class) {
+                                            double tmp = Double.parseDouble((String) data);
+                                            field.set(this, tmp);
+                                        }
+                                    } catch (NumberFormatException ne) {
+                                        if (Object.class.isAssignableFrom(t.entityType)) {
+                                            field.set(this, null);
+                                        } else {
+                                            field.set(this, 0);
+                                        }
                                     }
                                 } else if (t.entityType == String.class){
                                     field.set(this, data.toString());
