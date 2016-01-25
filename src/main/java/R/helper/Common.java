@@ -102,7 +102,7 @@ public class Common {
                     .setPositiveButton("ok", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            callback.onCompleted(ctx, new CallbackSuccess(null));
+                            callback.onCompleted(ctx, CallbackResult.success());
                         }
                     }).create().show();
         }

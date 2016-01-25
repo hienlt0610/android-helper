@@ -277,10 +277,10 @@ public class BaseActivity extends AppCompatActivity {
                 requestPermissions(permissions.toArray(new String[permissions.size()]), 3333);
                 permissionCallback = callback;
             } else {
-                callback.onCompleted(this, new CallbackSuccess());
+                callback.onCompleted(this, CallbackResult.success());
             }
         } else {
-            callback.onCompleted(this, new CallbackSuccess());
+            callback.onCompleted(this, CallbackResult.success());
         }
     }
 
@@ -299,9 +299,9 @@ public class BaseActivity extends AppCompatActivity {
                 }
                 if (permissionCallback != null) {
                     if (allAccepted) {
-                        permissionCallback.onCompleted(this, new CallbackSuccess());
+                        permissionCallback.onCompleted(this, CallbackResult.success());
                     } else {
-                        permissionCallback.onCompleted(this, new CallbackResult(new CallbackResult.CallbackErrorInfo(-1, null)));
+                        permissionCallback.onCompleted(this, CallbackResult.error());
                     }
                 }
             }
