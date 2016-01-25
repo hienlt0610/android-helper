@@ -11,15 +11,23 @@ public class CallbackResult {
             this.errorCode = errorCode;
             this.message = message;
         }
+        public CallbackErrorInfo(int errorCode) {
+            this.errorCode = errorCode;
+            this.message = "";
+        }
         public CallbackErrorInfo(IIErrorX error, String message) {
             this.errorCode = error.value();
             this.message = message;
+        }
+        public CallbackErrorInfo(IIErrorX error) {
+            this.errorCode = error.value();
+            this.message = "";
         }
         public String getMessage() {return this.message;}
         public int getCode() {return this.errorCode;}
     }
     CallbackErrorInfo error;
-    Object data;
+    protected Object data;
 
     public boolean hasError() {
         return error != null;

@@ -10,7 +10,13 @@ public class CallbackError extends CallbackResult {
     public CallbackError(int code, String message) {
         super(new CallbackErrorInfo(code, message));
     }
+    public CallbackError(int code) {
+        super(new CallbackErrorInfo(code, ""));
+    }
     public CallbackError(IIErrorX code, String message) {
         super(new CallbackErrorInfo(code.value(), message));
+    }
+    public CallbackError(IIErrorX code) {
+        super(new CallbackErrorInfo(code.value(), ""));
     }
 }
