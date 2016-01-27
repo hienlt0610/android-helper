@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -222,6 +223,42 @@ public abstract class EntityX {
     private <T> T castList(Class<T> type) throws Exception {
         T w = type.newInstance();
         return w;
+    }
+
+    public HashMap<String, Object> exportToHashMap() throws Exception {
+        HashMap<String, Object> output = new HashMap<>();
+
+        for (Field field : this.getClass().getDeclaredFields()) {
+            String fieldName = field.getName();
+            if (fields.containsKey(fieldName)) {
+                field.setAccessible(true);
+                EntityMetaData t = fields.get(fieldName);
+                Object fieldValue = field.get(this);
+                if (fieldValue != null) {
+                    if (t.isArray) {
+                        Iterable iterable = (Iterable) fieldValue;;
+                        ArrayList<Object> array = new ArrayList<>();
+                        if (t.isDerivedFromEntity) {
+                            for (Object curr : iterable) {
+                                array.add(((EntityX) curr).exportToHashMap());
+                            }
+                        } else {
+                            for (Object curr : iterable) {
+                                array.add(curr);
+                            }
+                        }
+                        output.put(t.key, array);
+                    } else {
+                        if (t.isDerivedFromEntity) {
+                            output.put(t.key, ((EntityX) fieldValue).exportToHashMap());
+                        } else {
+                            output.put(t.key, fieldValue);
+                        }
+                    }
+                }
+            }
+        }
+        return output;
     }
 
     @Override
