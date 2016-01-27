@@ -103,6 +103,19 @@ public class LocalStorage {
         }
     }
 
+    public static void unsafeSet(@NonNull String key, EntityX obj) {
+        try {
+            if (obj != null) {
+                JSONObject json = obj.exportToJson();
+                set(key, json);
+            } else {
+                sInstance.db.del(key);
+            }
+        }catch (Exception E) {
+            E.printStackTrace();
+        }
+    }
+
     public static void set(int key, boolean b) {
         set(sInstance.ctx.getString(key), b);
     }
