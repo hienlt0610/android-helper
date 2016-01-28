@@ -177,6 +177,14 @@ public class BaseActivity extends AppCompatActivity {
         openFragment(f, holder_id, false);
     }
 
+    public static void removeFragment(int holder_id) {
+        sInstance.getSupportFragmentManager().beginTransaction().remove(sInstance.getSupportFragmentManager().findFragmentById(holder_id)).commit();
+    }
+
+    public static void removeFragment(android.support.v4.app.Fragment f) {
+        sInstance.getSupportFragmentManager().beginTransaction().remove(f).commit();
+    }
+
     static int getTransformAndBoundsTransition() {
         return R.transition.transform_n_bounds;
     }
