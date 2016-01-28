@@ -78,7 +78,8 @@ public class CodecX {
         if (encodeMap != null) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < str.length(); i++) {
-                sb.append(encodeMap.get(str.charAt(i) + ""));
+                String tmp = encodeMap.get(str.charAt(i) + "");
+                sb.append(tmp != null?tmp:str.charAt(i));
             }
             return sb.toString();
         } else {
@@ -99,7 +100,8 @@ public class CodecX {
         if (decodeMap != null) {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < str.length(); i++) {
-                sb.append(decodeMap.get(str.charAt(i) + ""));
+                String tmp = decodeMap.get(str.charAt(i) + "");
+                sb.append(tmp!=null?tmp:str.charAt(i));
             }
             return sb.toString();
         } else {

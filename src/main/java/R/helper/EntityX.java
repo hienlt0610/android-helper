@@ -261,6 +261,14 @@ public abstract class EntityX {
         return output;
     }
 
+    public HashMap<String, Object> exportToHashMapUnsafe(){
+        try {
+            return exportToHashMap();
+        } catch (Exception E) {
+            return new HashMap<>();
+        }
+    }
+
     @Override
     public String toString() {
         try {
