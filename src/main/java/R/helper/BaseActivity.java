@@ -61,14 +61,15 @@ public class BaseActivity extends AppCompatActivity {
                 Rect r = new Rect();
                 getWindow().getDecorView().getWindowVisibleDisplayFrame(r);
                 boolean isSoftKeyShown = r.height() < getScreenHeight()*0.8;
+                boolean lastState = isKeyboardShown;
                 isKeyboardShown = isSoftKeyShown;
                 screenRegion = r;
-                onLayoutChanged(r, isSoftKeyShown);
+                onLayoutChanged(r, isSoftKeyShown, lastState);
             }
         });
     }
 
-    public void onLayoutChanged(Rect r, boolean isSoftKeyShown) {
+    public void onLayoutChanged(Rect r, boolean isSoftKeyShown, boolean lastState) {
     }
 
     protected void hideSystemUI() {
