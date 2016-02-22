@@ -1,6 +1,8 @@
 package R.helper;
 
 import android.app.Activity;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 /**
@@ -17,6 +19,20 @@ public class BaseFragment extends Fragment {
             return (T)act;
         }
         return null;
+    }
+
+    public static <T extends BaseFragment> T newInstance(Class<T> clazz) {
+        return BaseFragment.newInstance(clazz, null);
+    }
+
+    public static <T extends BaseFragment> T newInstance(Class<T> clazz, @Nullable Bundle b) {
+        try {
+            T s = (T) clazz.newInstance();
+            s.setArguments(b == null?new Bundle():b);
+            return s;
+        }catch (Exception E) {
+            return null;
+        }
     }
 
     public void onResumeFromBackStack() {}
