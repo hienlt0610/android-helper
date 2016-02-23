@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -365,5 +366,16 @@ public class BaseActivity extends AppCompatActivity {
                 toast.show();
             }
         }, 500);
+    }
+
+    public Drawable getDrawableResource(int resId) {
+        if ( Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP )
+        {
+            return getDrawable(resId);
+        }
+        else
+        {
+            return getResources().getDrawable(resId);
+        }
     }
 }
