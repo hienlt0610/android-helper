@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Helper</string>
+
+    <string name="time_1_min_ago">%1$s min ago</string>
+    <string name="time_n_min_ago">%1$s mins ago</string>
+    <string name="time_1_h_1_min_ago">1 hr  %1$s min ago</string>
+    <string name="time_1_h_n_min_ago">1 hr  %1$s mins ago</string>
+    <string name="time_n_h_ago">%1$s hrs ago</string>
+    <string name="time_n_d_ago">%1$s days ago</string>
 </resources>

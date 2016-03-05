@@ -9,14 +9,20 @@ import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+
+import vietnamworks.com.helper.R;
 
 /**
  * Created by duynk on 12/29/15.
  */
 public class Common {
+    public final static String DEFAULT_DATETIME_FORMAT = "EEE, d MMM yyyy, HH:mm";
+
     public static boolean isLollipopOrLater() {
         return Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP;
     }
@@ -123,5 +129,53 @@ public class Common {
             sb.append(c);
         }
         return sb.toString();
+    }
+
+    public static String nowString() {
+        return Common.nowString(DEFAULT_DATETIME_FORMAT);
+    }
+
+
+    public static String nowString(String format) {
+        java.text.DateFormat df = new SimpleDateFormat(format);
+        String date = df.format(Calendar.getInstance().getTime());
+        return date;
+    }
+
+    public static String getDateString(Date date) {
+        return getDateString(date, DEFAULT_DATETIME_FORMAT);
+    }
+
+    public static String getDateString(long timestamp) {
+        Date date = new Date(timestamp);
+        return getDateString(date, DEFAULT_DATETIME_FORMAT);
+    }
+
+    public static String getDateString(Date date, String format) {
+        return new SimpleDateFormat(format).format(date);
+    }
+
+    public static String getDuration(long timestamp) {
+        long now = getMillis();
+        long minutes = (Math.max(now - timestamp, 0)/1000)/60;
+
+        if (minutes <= 1) { //less than 1 min
+            return String.format(BaseActivity.sInstance.getString(R.string.time_1_min_ago), minutes);
+        } else if (minutes < 60) {
+            return String.format(BaseActivity.sInstance.getString(R.string.time_n_min_ago), minutes);
+        } else if (minutes < 2*60) {
+            long min = (minutes%60);
+            if (min > 2) {
+                return String.format(BaseActivity.sInstance.getString(R.string.time_1_h_n_min_ago), min);
+            } else {
+                return String.format(BaseActivity.sInstance.getString(R.string.time_1_h_1_min_ago), min);
+            }
+        } else if (minutes < 24*2*60) {
+            return String.format(BaseActivity.sInstance.getString(R.string.time_n_h_ago), Math.round(minutes / 60f));
+        } else if (minutes < 7*24*60) {
+            return String.format(BaseActivity.sInstance.getString(R.string.time_n_d_ago), Math.round(minutes/(24*60f)));
+        } else {
+            return getDateString(timestamp);
+        }
     }
 }
