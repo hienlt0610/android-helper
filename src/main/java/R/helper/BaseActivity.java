@@ -103,6 +103,19 @@ public class BaseActivity extends AppCompatActivity {
         BaseActivity.sInstance.startActivity(intent);
     }
 
+    public static void pushActivity(Class<?> cls, @NonNull Bundle bundle) {
+        Intent intent = new Intent(BaseActivity.sInstance, cls);
+        intent.putExtras(bundle);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        BaseActivity.sInstance.startActivity(intent);
+    }
+
+    public static void pushActivity(Class<?> cls) {
+        Intent intent = new Intent(BaseActivity.sInstance, cls);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        BaseActivity.sInstance.startActivity(intent);
+    }
+
     public static void timeout(final Runnable f, long delay) {
         sInstance.setTimeout(f, delay);
     }
