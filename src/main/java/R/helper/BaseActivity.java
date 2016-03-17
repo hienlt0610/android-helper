@@ -85,11 +85,6 @@ public class BaseActivity extends AppCompatActivity {
         handler.post(f);
     }
 
-    @Override
-    public void onBackPressed() {
-        this.moveTaskToBack(true);
-    }
-
     public static void openActivity(Class<?> cls, @NonNull Bundle bundle) {
         Intent intent = new Intent(BaseActivity.sInstance, cls);
         intent.putExtras(bundle);
