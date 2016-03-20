@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="pad_q">2dp</dimen>
+    <dimen name="pad_h">4dp</dimen>
+    <dimen name="pad">8dp</dimen>
+    <dimen name="pad_x2">16dp</dimen>
+    <dimen name="pad_x3">24dp</dimen>
+    <dimen name="pad_x6">48dp</dimen>
+    <dimen name="pad_x7">56dp</dimen>
+    <dimen name="pad_x8">64dp</dimen>
+    <dimen name="pad_x9">72dp</dimen>
+    <dimen name="pad_x10">80dp</dimen>
+    <dimen name="pad_x11">88dp</dimen>
+</resources>
