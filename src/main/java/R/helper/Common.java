@@ -3,11 +3,13 @@ package R.helper;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.widget.Button;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -177,5 +179,19 @@ public class Common {
         } else {
             return getDateString(timestamp);
         }
+    }
+
+    public static void setButtonColorRes(Context context, Button btn, int backgroundColorRes, int textColorRes) {
+        int bgColor, textColor;
+
+        if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            bgColor = context.getResources().getColor(backgroundColorRes, context.getTheme());
+            textColor = context.getResources().getColor(textColorRes, context.getTheme());
+        } else {
+            bgColor = context.getResources().getColor(backgroundColorRes);
+            textColor = context.getResources().getColor(textColorRes);
+        }
+        btn.getBackground().setColorFilter(bgColor, PorterDuff.Mode.MULTIPLY);
+        btn.setTextColor(textColor);
     }
 }
